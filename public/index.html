@@ -1,23 +1,44 @@
-<!-- index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artist Management System</title>
-    <link rel="stylesheet" href="assets/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <!-- Include your CSS stylesheets here -->
+  <link rel="stylesheet" href="assets/styles.css">
 </head>
-
 <body>
-    <script src="../src/js/main.js"></script>
-    <script>
-        // main.js
-        document.addEventListener('DOMContentLoaded', function () {
-        // Check if the user is logged in
+    <button type="button" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">Logout</button>
+    <h5 style="position: absolute; top: 40px; right: 42%;" id="myHeading_welcome"></h5>
 
+        <script>
         const userDataString = localStorage.getItem('userData');
+        const userData = JSON.parse(userDataString);
+        var value = "Welcome " + userData.email + "!";
+        var heading = document.getElementById("myHeading_welcome");
+        heading.textContent = value;
+        </script>
+  <div id="dashboard">
+    <h1>Dashboard</h1>
+    <div id="tabs">
+      <button id="userTab">Users</button>
+      <button id="artistTab">Artists</button>
+      <button id="songTab">Songs</button>
+    </div>
+    <div id="content">
+      <!-- Content for each tab goes here -->
+    </div>
+  </div>
+
+  <script>
+    function logout() {
+            localStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        }
+    document.addEventListener('DOMContentLoaded', function () {
+      // Check user role type from localStorage
+
+      const userDataString = localStorage.getItem('userData');
         const userData = JSON.parse(userDataString);
         console.log(userData);
         if(!userData) {
@@ -39,29 +60,51 @@
             console.log(token);
             console.log(email);
         }
-        // Access token and email
+      const roleType = userData.role
+      console.log(roleType);    
 
-        console.log(userData.role);
-        console.log(userData.id);
+      // Get tab buttons
+      const userTab = document.getElementById('userTab');
+      const artistTab = document.getElementById('artistTab');
+      const songTab = document.getElementById('songTab');
 
-        // console.log(token);
-        // console.log(email);
-        // const token = localStorage.getItem('token');
+      // Check role type and show/hide tabs accordingly
+      if (roleType === 'super_admin') {
+        userTab.style.display = 'block';
+        artistTab.style.display = 'block';
+        songTab.style.display = 'block';
+      } else if (roleType === 'artist') {
+        userTab.style.display = 'none';
+        artistTab.style.display = 'none';
+        songTab.style.display = 'block';
+      }else if ( roleType === 'artist_manager') {
+        userTab.style.display = 'none';
+        artistTab.style.display = 'block';
+        songTab.style.display = 'block';
+      }
+      else {
+        // Default behavior for unknown role types
+        userTab.style.display = 'none';
+        artistTab.style.display = 'none';
+        songTab.style.display = 'none';
+      }
 
-        });
+      // Add event listeners for tab clicks
+      userTab.addEventListener('click', function () {
+        // Implement logic to load content for the Users tab
+        document.getElementById('content').innerText = 'Content for Users tab';
+      });
 
-        function logout() {
-            localStorage.removeItem('userData');
-            window.location.href = 'login.html';
-        }
-    </script>
-         <button type="button" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">Logout</button> 
-    <center>
-        <h1> Artist Management System </h1> </br>
-        <!-- <h3> Welcome <script> user_name </script> </h1> -->
+      artistTab.addEventListener('click', function () {
+        // Implement logic to load content for the Artists tab
+        document.getElementById('content').innerText = 'Content for Artists tab';
+      });
 
-        <h6 text align="right"> By Swikar Acharya </h6>
-    </center>
+      songTab.addEventListener('click', function () {
+        // Implement logic to load content for the Songs tab
+        document.getElementById('content').innerText = 'Content for Songs tab';
+      });
+    });
+  </script>
 </body>
-
 </html>

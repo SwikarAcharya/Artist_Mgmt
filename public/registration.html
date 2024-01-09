@@ -14,7 +14,7 @@
 
   <div class="container">
     <h2>Registration</h2>
-    <form>
+    <form id="registrationForm">
       <label for="firstname">First Name</label>
       <input type="text" id="firstname" name="firstname" required>
 
@@ -26,6 +26,9 @@
 
       <label for="password">Password</label>
       <input type="password" id="password" name="password" required>
+
+      <label for="phone">Phone</label>
+      <input type="text" id="phone" name="phone" required>
 
       <label for="gender">Gender</label>
       <select id="gender" name="gender">
@@ -44,13 +47,76 @@
       <select id="roleType" name="roleType">
         <option value="super_admin">Super Admin</option>
         <option value="artist_manager">Artist Manager</option>
-        <option value="artist">Artist</option>
+        <option value="artist" selected>Artist</option>
       </select>
 
-      <button type="submit">Register</button>
+      <button type="submit" >Register</button>
     </form>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+
+// Function to handle login
+function register() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const firstname = document.getElementById('firstname').value;
+  const lastname = document.getElementById('lastname').value;
+  const gender = document.getElementById('gender').value;
+  const dob = document.getElementById('dob').value;
+  const roleType = document.getElementById('roleType').value;
+  const address = document.getElementById('address').value;
+  const phone = document.getElementById('phone').value;
+
+  console.log(email, password, firstname, lastname, gender, dob, roleType, address);  
+
+  // Return a promise from the function
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post('http://localhost:2000/api/users', {
+        first_name : firstname,
+        last_name : lastname,
+        email : email,
+        password : password,
+        phone : phone,
+        dob : dob,
+        gender : gender,
+        address :address,
+        role_type : roleType
+
+      });
+
+      // Log the response to the console
+      console.log('Response from Backend:', response.data);
+      alert("Registration successful");
+      resolve(response.data);
+    } catch (error) {
+      console.error('Error sending request:', error);
+      alert("Registration failed");
+      // Reject the promise with the error
+      reject(error);
+    }
+  });
+}
+
+// Example of using the promise
+
+document.getElementById('registrationForm').addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  register()
+    .then((responseData) => {
+      console.log('Backend Response: ', responseData);
+      window.location.href = 'login.html';
+      // alert('Backend Response: ' + JSON.stringify(responseData));
+    })
+    .catch((error) => {
+      console.error('Error: ', error);
+      // alert('Error: ' + JSON.stringify(error));
+    });
+});
+</script>
 </body>
 
 </html>
