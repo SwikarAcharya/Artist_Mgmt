@@ -1,0 +1,67 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Management System</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+    <script src="../src/js/main.js"></script>
+    <script>
+        // main.js
+        document.addEventListener('DOMContentLoaded', function () {
+        // Check if the user is logged in
+
+        const userDataString = localStorage.getItem('userData');
+        const userData = JSON.parse(userDataString);
+        console.log(userData);
+        if(!userData) {
+            window.location.href = 'login.html';
+            console.log("No user data 1");
+            alert("Please login first");
+        }
+
+        // if (!token || token == 'undefined' || userData == 'undefined') {
+        if (!userData || userData == 'undefined') {
+            console.log("No user data 2");
+            // Redirect to the login page if not logged in
+            window.location.href = 'login.html';
+            console.log("No user data 2");
+        }
+        else{
+            const token = userData.token;
+            const email = userData.email;
+            console.log(token);
+            console.log(email);
+        }
+        // Access token and email
+
+        console.log(userData.role);
+        console.log(userData.id);
+
+        // console.log(token);
+        // console.log(email);
+        // const token = localStorage.getItem('token');
+
+        });
+
+        function logout() {
+            localStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        }
+    </script>
+         <button type="button" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">Logout</button> 
+    <center>
+        <h1> Artist Management System </h1> </br>
+        <!-- <h3> Welcome <script> user_name </script> </h1> -->
+
+        <h6 text align="right"> By Swikar Acharya </h6>
+    </center>
+</body>
+
+</html>

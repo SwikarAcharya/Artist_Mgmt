@@ -1,0 +1,36 @@
+// src/js/authService.js
+
+// API service for authentication-related functionalities
+// import { apiUrl } from './api.js';
+const apiUrl = "http://localhost:2000/api"
+console.log(apiUrl);
+const authService = {
+  login: async (email, password) => {
+    console.log(email+" from authService: " + password);
+    try {
+      const response = await fetch(`${apiUrl}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+      console.log(data.token);
+      return data.token;
+    
+    } catch (error) {
+      console.error('Error during login:', error);
+      throw error;
+    }
+  },
+
+  // You can add more authentication-related functions here
+};
+
+export default authService;

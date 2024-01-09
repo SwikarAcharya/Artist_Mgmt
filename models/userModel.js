@@ -1,5 +1,3 @@
-// models/userModel.js
-
 const db = require('../config/database'); 
 const { genSaltSync, hashSync,compareSync } = require("bcrypt");
 
@@ -41,19 +39,19 @@ const UserModel = {
 
       updateUser: async (userId, updatedUserData) => {
         try {
-          // Check if the updatedUserData includes a password
+          
           if (updatedUserData.password) {
-            // Generate a salt and hash the password
+            
             const salt = genSaltSync(10);
             const hashedPassword = hashSync(updatedUserData.password, salt);
 
-            // Update the updatedUserData with the hashed password
+            
             updatedUserData.password = hashedPassword;
           }
-          // Use promise-based query to update an existing user
+          
           await db.promise().query('UPDATE User SET ? WHERE id = ?', [updatedUserData, userId]);
     
-          // Fetch the updated user from the database
+          
           const [updatedUserRows] = await db.promise().query('SELECT * FROM User WHERE id = ?', userId);
           const updatedUser = updatedUserRows[0];
     
@@ -65,16 +63,16 @@ const UserModel = {
 
   deleteUser: async (userId) => {
     try {
-      // Use promise-based query to delete user by ID
+      
       const [result] = await db.promise().query('DELETE FROM User WHERE id = ?', userId);
       console.log(result);
       const affectedRows = result.affectedRows;
       if (affectedRows > 0) {
         console.log(`Successfully deleted ${affectedRows} record(s) with id ${userId}`);
-        return { success: true }; // or you can return a success message or handle as needed
+        return { success: true }; 
       } else {
         console.log(`No record found with id ${userId}`);
-        return { success: false }; // or you can return a message or handle as needed
+        return { success: false }; 
       }
 
     } catch (error) {

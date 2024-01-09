@@ -17,7 +17,7 @@ const authController = {
       }
       else {
             const token = jwt.sign({ userId: user.id, role: user.role_type }, secretKey, { expiresIn: '1h' });
-            res.json({ token });
+            res.json({ token, id: user.id, email: user.email, role: user.role_type });
         }
     //   const token = jwt.sign({ userId: user.id, role: user.role_type }, secretKey, { expiresIn: '1h' });
 

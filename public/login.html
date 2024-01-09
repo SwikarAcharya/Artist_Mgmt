@@ -1,0 +1,104 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/styles.css">
+  <title>Login</title>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="button" onclick="login()">Login</button>
+    </form>
+    <p>Don't have an account? <a href="registration.html">Register here.</a></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+        const userDataString = localStorage.getItem('userData');
+        const userData = JSON.parse(userDataString);
+        console.log(userData);
+        if(userData && userData.token!= 'undefined' && userData.email!= 'undefined') {
+            window.location.href = 'index.html';
+        }
+
+
+    // Function to handle login
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Return a promise from the function
+      return new Promise(async (resolve, reject) => {
+        try {
+          const response = await axios.post('http://localhost:2000/api/auth/login', {
+            email: email,
+            password: password,
+          });
+
+          // Log the response to the console
+          console.log('Response from Backend:', response.data);
+              const userData = {
+            token: response.data.token,
+            email: email,
+            id: response.data.id,
+            role: response.data.role
+            };
+
+
+        //   if(response.data.token){
+        //     const userData = {
+        //     token: response.data.token,
+        //     email: email,
+        //     id: response.data.id,
+        //     role: response.data.role
+        //     };
+        //   }
+        //     else{
+        //         alert("Invalid Credentials");
+        //         return;
+        //     }
+
+        //   localStorage.setItem('token', response.data.token);
+          localStorage.setItem('userData', JSON.stringify(userData));
+          window.location.href = "index.html?"+email;
+
+          // Resolve the promise with the response data
+          resolve(response.data);
+        } catch (error) {
+            alert("Login failed");
+          console.error('Error sending request:', error);
+
+          // Reject the promise with the error
+          reject(error);
+        }
+      });
+    }
+
+    // Example of using the promise
+    document.getElementById('loginForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      // Call the login function and handle the promise
+      login()
+        .then((responseData) => {
+          // Handle success - responseData contains the response from the backend
+          alert('Backend Response: ' + JSON.stringify(responseData));
+        })
+        .catch((error) => {
+          // Handle error
+          alert('Error: ' + JSON.stringify(error));
+        });
+    });
+  </script>
+</body>
+</html>
