@@ -79,6 +79,17 @@ const UserModel = {
       throw error;
     }
   },
+
+  getUserById: async (userId) => {
+    try {
+      const [rows] = await db.promise().query('SELECT id, first_name, last_name, email, phone, dob, gender, address, role_type FROM User WHERE id = ?', userId);
+      const user = rows[0];
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   // getUserByUserEmail: (email,callBack) => {
   //   db.query(
   //     `select * from User where email = ?`,

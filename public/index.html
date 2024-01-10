@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-  <!-- Include your CSS stylesheets here -->
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
     <button type="button" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">Logout</button>
-    <h5 style="position: absolute; top: 40px; right: 42%;" id="myHeading_welcome"></h5>
+    <h5 style="position: absolute; top: 20px; right: 42%;" id="myHeading_welcome"></h5>
 
         <script>
         const userDataString = localStorage.getItem('userData');
@@ -21,12 +20,11 @@
   <div id="dashboard">
     <h1>Dashboard</h1>
     <div id="tabs">
-      <button id="userTab">Users</button>
+      <button id="userTab" onclick="location.href='user.html'">Users</button>
       <button id="artistTab">Artists</button>
       <button id="songTab">Songs</button>
     </div>
     <div id="content">
-      <!-- Content for each tab goes here -->
     </div>
   </div>
 
@@ -36,8 +34,6 @@
             window.location.href = 'login.html';
         }
     document.addEventListener('DOMContentLoaded', function () {
-      // Check user role type from localStorage
-
       const userDataString = localStorage.getItem('userData');
         const userData = JSON.parse(userDataString);
         console.log(userData);
@@ -46,11 +42,8 @@
             console.log("No user data 1");
             alert("Please login first");
         }
-
-        // if (!token || token == 'undefined' || userData == 'undefined') {
         if (!userData || userData == 'undefined') {
             console.log("No user data 2");
-            // Redirect to the login page if not logged in
             window.location.href = 'login.html';
             console.log("No user data 2");
         }
@@ -62,13 +55,9 @@
         }
       const roleType = userData.role
       console.log(roleType);    
-
-      // Get tab buttons
       const userTab = document.getElementById('userTab');
       const artistTab = document.getElementById('artistTab');
       const songTab = document.getElementById('songTab');
-
-      // Check role type and show/hide tabs accordingly
       if (roleType === 'super_admin') {
         userTab.style.display = 'block';
         artistTab.style.display = 'block';
@@ -83,25 +72,19 @@
         songTab.style.display = 'block';
       }
       else {
-        // Default behavior for unknown role types
         userTab.style.display = 'none';
         artistTab.style.display = 'none';
         songTab.style.display = 'none';
       }
 
-      // Add event listeners for tab clicks
       userTab.addEventListener('click', function () {
-        // Implement logic to load content for the Users tab
         document.getElementById('content').innerText = 'Content for Users tab';
       });
-
       artistTab.addEventListener('click', function () {
-        // Implement logic to load content for the Artists tab
         document.getElementById('content').innerText = 'Content for Artists tab';
       });
 
       songTab.addEventListener('click', function () {
-        // Implement logic to load content for the Songs tab
         document.getElementById('content').innerText = 'Content for Songs tab';
       });
     });

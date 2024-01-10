@@ -4,7 +4,28 @@ const UserController = {
   listUsers: async (req, res) => {
     try {
       const users = await UserModel.listUsers();
-      return res.json(users);
+      // console.log("SURU" );
+      // console.log(users)
+      // return res.json(users);
+
+      const usersForFrontend = users.map(user => {
+        const { id, first_name, last_name, email, phone, dob, gender, address, role_type, created_at, updated_at } = user;
+        return {
+          id,
+          first_name,
+          last_name,
+          email,
+          phone,
+          dob,
+          gender,
+          address,
+          role_type,
+          created_at,
+          updated_at
+        };
+      });
+
+      return res.json(usersForFrontend);
     } catch (error) {
       console.error('Error fetching users:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -48,6 +69,18 @@ updateUser: async (req, res) => {
       return res.json(updatedUser);
     } catch (error) {
       console.error('Error updating user:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
+  getUserById: async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+      const user = await UserModel.getUserById(userId);
+      return res.json(user);
+    } catch (error) {
+      console.error('Error fetching user by id:', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },

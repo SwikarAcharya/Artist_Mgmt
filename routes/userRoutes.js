@@ -10,8 +10,7 @@ router.get('/', UserController.listUsers);
 // commented for now and moved this to line 5 as we wont be having the JWT token if we were to register a new user
 // router.post('/', UserController.createUser);
 router.put('/:userId', UserController.updateUser);
+router.get('/:userId', UserController.getUserById);
 router.delete('/:userId', UserController.deleteUser);
-
-// router.get('/users', authenticate, UserController.listUsers);
 
 module.exports = router;
