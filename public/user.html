@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/styles.css">
+  <title>User Dashboard</title>
+<script>
+    const userDataString = localStorage.getItem('userData');
+    const userData = JSON.parse(userDataString);
+    console.log(userData);
+    if(!userData) {
+        window.location.href = 'login.html';
+        console.log("No user data 1");
+        alert("Please login first");
+    }
+    const check_access = userData.role;
+    if(check_access != 'super_admin') {
+        window.location.href = 'login.html';
+        console.log("No user data 1");
+        alert("You are not authorized to access this page");
+    }
+async function getUserById(userId) {
+    try {
+        const userDataString = localStorage.getItem('userData');
+        const userData = JSON.parse(userDataString);
+        const token = userData.token;
+        const response = await axios.get(`http://localhost:2000/api/users/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+      console.log(response);
+      localStorage.setItem('userDataById', JSON.stringify(response.data));
+    } catch (error) {
+      console.error('Error fetching user by ID:', error);
+    }
+    }
+  async function goToUpdate(userId) {
+    await getUserById(userId);
+    location.href = 'update.html';
+  }
+  function back() {
+      localStorage.removeItem('userDataById');
+      location.href = 'index.html';
+    }
+    function logout() {
+            localStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        }
+</script>
+</head>
+<body>
+  <button type="button" onclick="back()" style="position: absolute; left: 10px;">Back</button>
+  <button type="button" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">Logout</button>
+  <div class="dashboard-container">
+    <h2>User Dashboard</h2>
+    <center><a href="registration.html" class="create-user-btn" style="text-decoration: none; font-size: 18px; color: blue;">Create A New User</a>
+    <h3>Existing User List</h3> </center>
+    <table > 
+      <tr>
+        <td style="position: absolute; left:200px; top: 100px"> <button type = "button" id="prev"><</button> </td>
+        <td style="position: absolute; right:200px; top: 100px"> <button type = "button" id="next" >></button></td>
+      </tr>
+    </table>
+    <table style="border-spacing: 10px 15px;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Address</th>
+          <th>Phone</th>
+          <th>Gender</th>
+          <th>DOB</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody">
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="../src/js/user_dashboard.js"></script>
+  <script>
+  function updateUser(userId) {
+    alert("Update function not implemented yet" + userId);
+    
+  }
+  async function deleteUser(userId) {
+    var sure = confirm('Are sure you want to proceed ?');
+    if (sure== true){
+    try {
+        const userDataString = localStorage.getItem('userData');
+        const userData = JSON.parse(userDataString);
+        const token = userData.token;
+        const response = await axios.delete(`http://localhost:2000/api/users/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+      alert('User deleted successfully');
+      console.log(response);   
+    } catch (error) {
+        alert('Error deleting user');
+      console.error('Error deleting user:', error);
+    }
+    location.reload();
+    }
+  }
+</script>
+</body>
+</html>

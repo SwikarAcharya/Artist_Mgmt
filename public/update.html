@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/styles.css">
+  <title>Update User</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+
+    const userDataString = localStorage.getItem('userData');
+    const userData = JSON.parse(userDataString);
+    console.log(userData);
+    if(!userData) {
+        window.location.href = 'login.html';
+        console.log("No user data 1");
+        alert("Please login first");
+    }
+    const check_access = userData.role;
+    if(check_access != 'super_admin') {
+        window.location.href = 'login.html';
+        console.log("No user data 1");
+        alert("You are not authorized to access this page");
+    }
+    
+    const userDataByIdString = localStorage.getItem('userDataById');
+    const userDataById = JSON.parse(userDataByIdString);
+    console.log(userDataById);
+    const email_id = userDataById.email;
+    const first_name_id = userDataById.first_name;
+    const last_name_id = userDataById.last_name;
+    const role_type_id = userDataById.role_type;
+    const address_id = userDataById.address;
+    const id_id = userDataById.id;
+    const phone_id = userDataById.phone;
+    const dob_id =  userDataById.dob.substring(0, 10);
+    const gender_id = userDataById.gender;
+
+    function setFormValues() {
+      document.getElementById('updateFirstName').value = `${first_name_id}`;
+      document.getElementById('updateLastName').value = `${last_name_id}`;
+      document.getElementById('updateEmail').value = `${email_id}`;
+      document.getElementById('updateAddress').value = `${address_id}`;
+      document.getElementById('updateDob').value = `${dob_id}`;
+      document.getElementById('updatePhone').value = `${phone_id}`;
+      document.getElementById('updateGender').value = `${gender_id}`;
+      document.getElementById('updateRoleType').value = `${role_type_id}`;
+    }
+    function back() {
+      localStorage.removeItem('userDataById');
+      location.href = 'user.html';
+    }
+    function logout() {
+            localStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        }
+  </script>
+</head>
+<body>
+    <button type="button" onclick="back()" style="position: absolute; left: 10px;">Back</button>
+    <button type="button" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">Logout</button>
+<div id="updateModal" class="modal">
+  <div class="modal-content">
+    <form id="updateForm">
+        <h2>Update User</h2>
+        <label for="updateFirstName">First Name:</label>
+        <input type="text" id="updateFirstName" name="updateFirstName" required>
+  
+        <label for="updateLastName">Last Name:</label>
+        <input type="text" id="updateLastName" name="updateLastName" required>
+  
+        <label for="updateEmail">Email:</label>
+        <input type="email" id="updateEmail" name="updateEmail" required>
+  
+        <label for="updateAddress">Address:</label>
+        <input type="text" id="updateAddress" name="updateAddress" required>
+  
+        <label for="updateDob">Date of Birth:</label>
+        <input type="date" id="updateDob" name="updateDob" required>
+  
+        <label for="updatePhone">Phone:</label>
+        <input type="tel" id="updatePhone" name="updatePhone" required>
+  
+        <label for="updateGender">Gender:</label>
+        <select id="updateGender" name="updateGender">
+          <option value="m">Male</option>
+          <option value="f">Female</option>
+        </select>
+  
+        <label for="updateRoleType">Role Type:</label>
+        <select id="updateRoleType" name="updateRoleType">
+          <option value="super_admin">Super Admin</option>
+          <option value="artist_manager">Artist Manager</option>
+          <option value="artist">Artist</option>
+        </select>
+        <button type="button" onclick="submitUpdate()">Update</button>
+      </form>
+  </div>
+</div>
+<script>
+ setFormValues();
+async function submitUpdate() {
+    const userDataString = localStorage.getItem('userData');
+    const userData = JSON.parse(userDataString);
+    const token = userData.token;
+
+    const updateFirstName = document.getElementById('updateFirstName').value;
+    const updateLastName = document.getElementById('updateLastName').value;
+    const updateEmail = document.getElementById('updateEmail').value;
+    const updateAddress = document.getElementById('updateAddress').value;
+    const updateDob = document.getElementById('updateDob').value;
+    const updatePhone = document.getElementById('updatePhone').value;
+    const updateGender = document.getElementById('updateGender').value;
+    const updateRoleType = document.getElementById('updateRoleType').value;
+
+    const updatedData = {
+    first_name: updateFirstName,
+    last_name: updateLastName,
+    email: updateEmail,
+    address: updateAddress,
+    dob: updateDob,
+    phone: updatePhone,
+    gender: updateGender,
+    role_type: updateRoleType,
+  };
+  console.log(id_id);
+  try {
+    const response = await axios.put(`http://localhost:2000/api/users/${id_id}`, updatedData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log('User updated successfully:', response.data);
+    alert('User updated successfully')
+
+    localStorage.removeItem('userDataById');
+    location.href = 'user.html';
+  } catch (error) {
+    console.error('Error updating user:', error);
+
+  }
+
+}
+</script>
+
+</body>
+</html>
