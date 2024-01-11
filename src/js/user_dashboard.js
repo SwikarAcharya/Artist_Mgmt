@@ -1,17 +1,34 @@
-async function displayUsers() {
+let currentPage = 1;
+const itemsPerPage = 10;
+
+async function displayUsers(page) {
     try {
 
         const userDataString = localStorage.getItem('userData');
         const userData = JSON.parse(userDataString);
         const token = userData.token;
         console.log(token);
-        const response = await axios.get('http://localhost:2000/api/users', {
+
+        const offset = (page - 1) * itemsPerPage;
+
+        const response = await axios.get(`http://localhost:2000/api/users?offset=${offset}&limit=${itemsPerPage}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
 
       const users = response.data;
+      if (users.length === 0) {
+        if(currentPage > 1) {
+          alert('No more users to display');
+          currentPage--;
+          displayUsers(currentPage);
+        }
+        if(currentPage === 1) {
+          alert('No users to display');
+        }
+        return;
+      }
   
       const userTableBody = document.getElementById('userTableBody');
       userTableBody.innerHTML = ''; // Clear existing data
@@ -28,7 +45,6 @@ async function displayUsers() {
           <td>${user.phone}</td>
           <td>${user.gender}</td>
           <td>${user.dob.substring(0, 10)}</td>
-          <!-- Add other table data cells as needed -->
           <td>
            
             <button onclick="goToUpdate(${user.id})">Update</button>
@@ -43,4 +59,21 @@ async function displayUsers() {
     }
   }
   
-  displayUsers();
+  function prevPage() {
+    if (currentPage > 1) {
+      currentPage--;
+      displayUsers(currentPage);
+    }
+  }
+  
+  function nextPage() {
+    currentPage++;
+    displayUsers(currentPage);
+  }
+  
+  document.getElementById('prev').addEventListener('click', prevPage);
+  document.getElementById('next').addEventListener('click', nextPage);
+  
+
+
+  displayUsers(currentPage);

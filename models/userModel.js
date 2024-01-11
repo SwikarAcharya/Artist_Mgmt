@@ -2,10 +2,10 @@ const db = require('../config/database');
 const { genSaltSync, hashSync,compareSync } = require("bcrypt");
 
 const UserModel = {   
-    listUsers: async () => {
+    listUsers: async (offset, limit) => {
         try {
-          
-          const [rows] = await db.promise().query('SELECT * FROM User');
+          console.log("offset: " + offset + " limit: " + limit);
+          const [rows] = await db.promise().query(`SELECT * FROM User LIMIT  ${limit} OFFSET ${offset}`);
     
           // Flattening the array and handling the buffer conversion
           const formattedRows = rows.map(row => {

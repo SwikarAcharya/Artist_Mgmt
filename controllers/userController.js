@@ -2,8 +2,9 @@ const UserModel = require('../models/userModel');
 
 const UserController = {
   listUsers: async (req, res) => {
+    const { offset = 0, limit = 10 } = req.query;
     try {
-      const users = await UserModel.listUsers();
+      const users = await UserModel.listUsers(offset, limit);
       // console.log("SURU" );
       // console.log(users)
       // return res.json(users);
